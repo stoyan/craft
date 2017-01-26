@@ -12,12 +12,12 @@ Use your own starting point when setting up a new app, e.g. CSS, JS, manifests a
 ## Create a new app
 
     $ craft MyApp https://github.com/stoyan/fail/archive/master.zip
+    $ cd MyApp
+    $ npm install . # sets up create-react-app
   
 This creates an app called `MyApp` using a zip template from github
 
 ## Get serious
 
-    $ cd MyApp
-    $ npm install . # sets up create-react-app
     $ npm start .   # start developing
     $ npm run build # deploy
