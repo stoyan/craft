@@ -1,0 +1,20 @@
+{
+  "name": "craftool",
+  "version": "1.0.2",
+  "description": "Create React App From Template",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "craft": "./index.js"
+  },
+  "dependencies": {
+    "fs-extra": "^1.0.0",
+    "request": "^2.79.0",
+    "extract-zip": "^1.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stoyan/craft.git"
+  }
+}
