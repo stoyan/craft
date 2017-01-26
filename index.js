@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 if (process.argv.length < 4) {
   console.log('Please provide an app name and a ZIP with the template');
   console.log('e.g.');
@@ -29,7 +31,7 @@ if (!uri.host || !uri.path || !uri.protocol) {
   console.error(zip, 'is not a valid URL');
   process.exit(1);  
 }
-const appDir = path.resolve(__dirname, app);
+const appDir = path.resolve(process.cwd(), app);
 
 try {
   stat(appDir);
