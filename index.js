@@ -25,42 +25,40 @@ const replacebles = [
   '.json',
 ].reduce((res, el) => {res[el] = 1; return res;}, {});
 
-console.log('Validating...');
+let tempDir;
+let tempUnzipDir;
+const appDir = path.resolve(process.cwd(), app);
+
+log('Validating...');
 const uri = url.parse(zip);
 if (!uri.host || !uri.path || !uri.protocol) {
-  console.error(zip, 'is not a valid URL');
-  process.exit(1);  
+  fail(zip, 'is not a valid URL');
 }
-const appDir = path.resolve(process.cwd(), app);
 
 try {
   stat(appDir);
-  console.error(appDir, 'already exists, giving up');
-  process.exit(1);  
+  logError(appDir, 'already exists, giving up');
+  process.exit(1);
 } catch (_) {}
 
-console.log('Making app dir...');
+log('Making app dirs...');
 fs.mkdirSync(appDir);
-const tempDir = fs.mkdtempSync(appDir);
-const tempUnzipDir = fs.mkdtempSync(tempDir);
+tempDir = fs.mkdtempSync(appDir);
+tempUnzipDir = fs.mkdtempSync(tempDir);
 
-console.log('Downloading template...');
+log('Downloading template...');
 const localZip = path.resolve(tempDir, 'template.zip');
 const file = fs.createWriteStream(localZip);
 
 request
   .get(zip)
-  .on('error', err => {
-    console.error(err);
-    process.exit(1);
-  })
+  .on('error', err => fail(err))
   .pipe(file);
-
 
 file.on('finish', () => {
   file.close(() => {
     let packageDir;
-    console.log('Unzipping...');
+    log('Unzipping...');
     unzip(localZip, {
         dir: tempUnzipDir,
         onEntry: entry => {
@@ -70,16 +68,14 @@ file.on('finish', () => {
         },
       }, err => {
         if (err) {
-          console.error('Error unzipping', localZip);
-          process.exit(1);
+          fail('Error unzipping, giving up', localZip);
         }
         if (!packageDir) {
-          console.error('package.json missing from the template');
-          process.exit(1);
+          fail('package.json missing from the template, giving up');
         }
-        console.log('Configuring app...')
+        log('Configuring app...')
         createApp(packageDir, appDir);
-    })
+    });
   });
 });
 
@@ -87,8 +83,7 @@ file.on('finish', () => {
 function createApp(source, dest) {
   fs.copy(source, dest, (err) => {
     if (err) {
-      console.error(err);
-      process.exit(1);
+      fail(err);
     }
     const packageJson = path.resolve(dest, 'package.json');
     const oldPackage = require(packageJson);
@@ -101,7 +96,7 @@ function createApp(source, dest) {
     oldPackage.version = '1.0.0';
     fs.writeFile(packageJson, JSON.stringify(oldPackage, null, 2), (err) => {
       if (err) {
-        console.error(err);
+        logError(err);
       }
     });
     
@@ -112,13 +107,17 @@ function createApp(source, dest) {
       () => {}
     );
     
-    rmTemp();
+    done();
   });
 }
 
 function rmTemp() {
-  fs.remove(tempDir, () => {});
-  fs.remove(tempUnzipDir, () => {});
+  if (tempDir) {
+    fs.removeSync(tempDir);  
+  }
+  if (tempUnzipDir) {
+    fs.removeSync(tempUnzipDir);
+  }
 }
 
 function replaceFiles(dir, seek, replaceWith) {
@@ -142,15 +141,40 @@ function replaceFiles(dir, seek, replaceWith) {
     
     fs.readFile(file, 'utf-8', (err, contents) => {
       if (err) {
-        console.error(err);
+        logError(err);
       }
       contents = contents.replace(new RegExp(seek, 'g'), replaceWith);
       fs.writeFile(file, contents, (err) => {
         if (err) {
-          console.error(err);
+          logError(err);
         }
       });
     });
 
   });
+}
+
+function fail(...msg) {
+  logError(msg.join(' '));
+  rmTemp();
+  if (appDir) {
+    fs.removeSync(appDir);  
+  }
+  process.exit(1);
+}
+
+function log(...msg) {
+  console.log('\x1B[90m'+ msg.join(' ') +'\x1B[39m'); // thanks echomd
+}
+
+function logError(...msg) {
+  console.log('\x1B[31m✖ ' + msg.join(' ') + '\x1B[39m');
+}
+
+function done() {
+  console.log('\x1B[32m✔ Success\x1B[39m');
+  console.log('Next steps...');
+  console.log('  cd ' + app);
+  console.log('  npm install .');
+  rmTemp();
 }
