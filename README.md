@@ -40,7 +40,7 @@ If you put these things on Github, let Github do the zipping.
 
 An example template: https://github.com/stoyan/fail/
 
-![Example template](/example-template.png?raw=true)
+![Example template](/README-example-template.png?raw=true)
 
 ## Fiddling with/contributing to CRAFT
 
