@@ -79,7 +79,6 @@ file.on('finish', () => {
   });
 });
 
-
 function createApp(source, dest) {
   fs.copy(source, dest, (err) => {
     if (err) {
@@ -173,8 +172,17 @@ function logError(...msg) {
 
 function done() {
   console.log('\x1B[32m✔ Success\x1B[39m');
-  console.log('Next steps...');
+  console.log('\nNext steps...');
   console.log('  cd ' + app);
   console.log('  npm install .');
   rmTemp();
+  
+  const postcraft = path.resolve(appDir, 'postcraft.txt');
+  fs.readFile(postcraft, 'utf-8', (err, contents) => {
+    if (err) {/* whatever */}
+    console.log('\nAnd a word from your template creator...');
+    console.log(contents);
+    fs.remove(postcraft);
+  });
+
 }

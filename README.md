@@ -42,8 +42,41 @@ An example template: https://github.com/stoyan/fail/
 
 ![Example template](/README-example-template.png?raw=true)
 
+### Special files in templates
+
+CRAFT has a spacial treatment for some files:
+
+  * `package.json` - CRAFT overwrites the app name with the name provided by the user and sets the version to `1.0.0`
+  * `README.md` - it's completely rewritten with a simple app name and "Hello". So feel free to add any useful text that shows up in github or npm, it will be gone in the newly-generated user app
+  * `postcraft.txt` - after the app is generated successfully the use is instructed to go to the new app and run `npm install .`. If you have any other words of wisdom, put them there so they can be shown to the user. The file itself is deleted from the newly generated app
+  
+CRAFT has a special treatment for all .CSS, .JS, .HTML and .JSON files. In all of these files all strings matching the name of template's name (read from `package.json`) are replaced with the name of the newly generated app (set by the user). So if the user does...
+
+    $ craft MyApp https://github.com/stoyan/fail/archive/master.zip
+    
+... then the template's `index.html` (just one example) turns from...
+
+```html
+<title>fail</title>
+```
+
+... to...
+
+```html
+<title>MyApp</title>
+```
+
+... provided the template's `package.json` has...
+
+```json
+{
+  "name": "fail",
+  /* ... */
+}
+```
+
 ## Fiddling with/contributing to CRAFT
 
  * Clone the repo
  * `npm install .`
- * `node index.js MyApp http://example.org`
+ * `node index.js MyApp http://example.org/zip.zip`
