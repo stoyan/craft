@@ -30,15 +30,17 @@ Now you zip everything in the root of your app except for any `build/` or `node_
 
 Normally your zip contains:
 
- * `package.json`
- * `README.md` (doesn't matter, it will be rewritten when a new app is generated from the template)
+ * `package.json` (required)
+ * `README.md` (doesn't matter, it will be rewritten when a new app is generated from the template, see below)
  * other root-y things like `manifest.json` (for PWA), `.gitignore`, `LICENSE`, `.travis.yml` and so on
  * `public/` folder with `index.html`, `favicon.ico`...
- * `src/` folder with `App.js`, `App.css`, `images\` ...
+ * `src/` folder with `App.js`, `App.css`, `images/` ...
 
 If you put these things on Github, let Github do the zipping.
 
-An example template: https://github.com/stoyan/fail/
+An example template's code is located at https://github.com/stoyan/fail/
+
+And the ZIP file's URL is available from...
 
 ![Example template](/README-example-template.png?raw=true)
 
@@ -47,10 +49,10 @@ An example template: https://github.com/stoyan/fail/
 CRAFT has a spacial treatment for some files:
 
   * `package.json` - CRAFT overwrites the app name with the name provided by the user and sets the version to `1.0.0`
-  * `README.md` - it's completely rewritten with a simple app name and "Hello". So feel free to add any useful text that shows up in github or npm, it will be gone in the newly-generated user app
-  * `postcraft.txt` - after the app is generated successfully the use is instructed to go to the new app and run `npm install .`. If you have any other words of wisdom, put them there so they can be shown to the user. The file itself is deleted from the newly generated app
+  * `README.md` - it's completely rewritten with a barebone contents: the app name and the string "Hello". So feel free to add any useful text that shows up in github or npm, it will be gone in the newly-generated user app
+  * `postcraft.txt` - after the app is generated successfully the user is instructed to go to the new app's dir and run `npm install .`. If you have any other words of wisdom, put them in `postcraft.txt` so they can be shown to the user. The file itself is deleted from the newly generated app
   
-CRAFT has a special treatment for all .CSS, .JS, .HTML and .JSON files. In all of these files all strings matching the name of template's name (read from `package.json`) are replaced with the name of the newly generated app (set by the user). So if the user does...
+CRAFT has a special treatment for all .CSS, .JS, .HTML and .JSON files. In all of these files all strings matching the template's name (read from `package.json`) are replaced with the name of the newly generated app (set by the user). So if the user does...
 
     $ craft MyApp https://github.com/stoyan/fail/archive/master.zip
     
@@ -71,7 +73,7 @@ CRAFT has a special treatment for all .CSS, .JS, .HTML and .JSON files. In all o
 ```json
 {
   "name": "fail",
-  /* ... */
+  "...": "..."
 }
 ```
 
