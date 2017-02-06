@@ -82,3 +82,7 @@ CRAFT has a special treatment for all .CSS, .JS, .HTML and .JSON files. In all o
  * Clone the repo
  * `npm install .`
  * `node index.js MyApp http://example.org/zip.zip`
+ 
+## Another writeup
+
+... is on [Medium](https://medium.com/@stoyanstefanov/craft-create-react-app-from-template-7fd3383d0954)
